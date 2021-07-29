@@ -1,9 +1,11 @@
+using FileServer.FileProvider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -27,6 +29,23 @@ namespace FileServer.Hosted
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add our IFileServerProvider implementation as a singleton
+            services.AddSingleton<IFileServerProvider>(new FileServerProvider(
+                new List<FileServerOptions>
+                {
+                    new FileServerOptions
+                    {
+                        FileProvider = new PhysicalFileProvider(@"D:\\Publish"),
+                        RequestPath = new PathString("/OtherPath"),
+                        EnableDirectoryBrowsing = true
+                    },
+                    //new FileServerOptions
+                    //{
+                    //    FileProvider = new PhysicalFileProvider(@"\\server\path"),
+                    //    RequestPath = new PathString("/MyPath"),
+                    //    EnableDirectoryBrowsing = true
+                    //}
+                }));
 
             #region Swagger UI
 
@@ -76,12 +95,15 @@ namespace FileServer.Hosted
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IFileServerProvider fileServerProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // call convenience method which adds our FileServerOptions from the IFileServerProvider service
+            app.UseFileServerProvider(fileServerProvider);
 
             app.UseRouting();
 
