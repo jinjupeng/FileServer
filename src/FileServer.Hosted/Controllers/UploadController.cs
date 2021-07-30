@@ -1,11 +1,13 @@
 ﻿using FileServer.Common.Extensions;
 using FileServer.FileProvider;
 using FileServer.Hosted.Filters;
+using FileServer.OSS;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using System.Threading.Tasks;
@@ -27,6 +29,7 @@ namespace FileServer.Hosted.Controllers
          * https://www.cnblogs.com/liuxiaoji/p/10266609.html
          * https://gitee.com/loogn/UploadServer?_from=gitee_search
          * https://www.cnblogs.com/Hangle/p/10233872.html
+         * https://www.cnblogs.com/liyouming/p/13341173.html
          * [虚拟目录](https://www.cnblogs.com/EminemJK/p/13362368.html)
          * 4、和OSS结合在一起使用
          */
@@ -38,14 +41,18 @@ namespace FileServer.Hosted.Controllers
         private IFileServerProvider _fileServerProvider;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ILogger<UploadController> _logger;
-
+        private readonly IOSSProvider _provider;
+        private readonly OSSOptions _options;
 
         public UploadController(IWebHostEnvironment hostingEnvironment, IFileServerProvider fileServerProvider,
-            ILogger<UploadController> logger)
+            ILogger<UploadController> logger, IOSSProvider provider,
+            IOptions<OSSOptions> options)
         {
             _hostingEnvironment = hostingEnvironment;
             _fileServerProvider = fileServerProvider;
             _logger = logger;
+            _provider = provider;
+            _options = options.Value;
             // 把上传目录设为：wwwroot\UploadFolder
             _targetFilePath = $@"{_hostingEnvironment.ContentRootPath}\UploadFolder";
             if (!Directory.Exists(_targetFilePath))
@@ -75,6 +82,7 @@ namespace FileServer.Hosted.Controllers
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
                 if (hasContentDispositionHeader)
                 {
+                    // 生成随机文件名
                     var trustedFileNameForFileStorage = Path.GetRandomFileName();
                     await section.Body.WriteFileAsync(Path.Combine(_targetFilePath, trustedFileNameForFileStorage));
                 }
@@ -91,12 +99,14 @@ namespace FileServer.Hosted.Controllers
         [HttpPost("UploadingFormFile")]
         public async Task<IActionResult> UploadingFormFile(IFormFile file)
         {
+            var fileProvider = _fileServerProvider.GetProvider($"{_options.RequestPath}");
             using (var stream = file.OpenReadStream())
             {
-                var trustedFileNameForFileStorage = Path.GetRandomFileName();
-                await stream.WriteFileAsync(Path.Combine(_targetFilePath, trustedFileNameForFileStorage));
+                await stream.WriteFileAsync(Path.Combine(_options.UploadPath, file.FileName));
             }
-            return Created(nameof(UploadController), null);
+            var fileInfo = fileProvider.GetFileInfo($"{file.FileName}");
+            _options.FileInfo = new FileInfo(fileInfo.PhysicalPath);
+            return Ok(await Task.FromResult(_provider.GetFileUrl(_options)));
         }
 
     }

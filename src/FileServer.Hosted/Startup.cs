@@ -1,4 +1,5 @@
 using FileServer.FileProvider;
+using FileServer.OSS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,23 +30,9 @@ namespace FileServer.Hosted
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add our IFileServerProvider implementation as a singleton
-            services.AddSingleton<IFileServerProvider>(new FileServerProvider(
-                new List<FileServerOptions>
-                {
-                    new FileServerOptions
-                    {
-                        FileProvider = new PhysicalFileProvider(@"D:\\Publish"),
-                        RequestPath = new PathString("/OtherPath"),
-                        EnableDirectoryBrowsing = true
-                    },
-                    //new FileServerOptions
-                    //{
-                    //    FileProvider = new PhysicalFileProvider(@"\\server\path"),
-                    //    RequestPath = new PathString("/MyPath"),
-                    //    EnableDirectoryBrowsing = true
-                    //}
-                }));
+            services.AddFileServer(Configuration);
+
+            services.AddOSSProvider(Configuration);
 
             #region Swagger UI
 

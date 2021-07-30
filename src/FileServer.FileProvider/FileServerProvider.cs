@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileServer.FileProvider
 {
