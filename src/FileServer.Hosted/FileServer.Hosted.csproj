@@ -9,9 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FileServer.OSS\FileServer.OSS.csproj" />
     <ProjectReference Include="..\FileServer.Common\FileServer.Common.csproj" />
     <ProjectReference Include="..\FileServer.FileProvider\FileServer.FileProvider.csproj" />
+    <ProjectReference Include="..\FileServer.OSS\FileServer.OSS.csproj" />
   </ItemGroup>
 
 
