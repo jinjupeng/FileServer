@@ -23,80 +23,81 @@ namespace FileServer.Hosted.Controllers
          * 8、网络异常问题处理
          */
 
-        /// <summary>
-        /// 上传目录
-        /// </summary>
-        private readonly string _folder;
         private readonly ILogger<DownloadController> _logger;
         private IFileServerProvider _fileServerProvider;
-        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IBlobProvider _fileSystemBlobProvider;
         private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
         {
-            {".png", "image/png"},
-            {".jpg", "image/jpeg"},
-            {".jpeg", "image/jpeg"},
-            {".gif", "image/gif"}
+            { ".png", "image/png" },
+            { ".jpg", "image/jpeg" },
+            { ".jpeg", "image/jpeg" },
+            { ".gif", "image/gif" },
+            { ".pdf", "application/pdf"}
         };
 
-        public DownloadController(IWebHostEnvironment hostingEnvironment, IFileServerProvider fileServerProvider,
-            ILogger<DownloadController> logger)
+        public DownloadController(IFileServerProvider fileServerProvider, ILogger<DownloadController> logger, 
+            IBlobProvider fileSystemBlobProvider)
         {
-            _hostingEnvironment = hostingEnvironment;
             _fileServerProvider = fileServerProvider;
-            _folder = $@"{_hostingEnvironment.ContentRootPath}\UploadFolder";
             _logger = logger;
+            _fileSystemBlobProvider = fileSystemBlobProvider;
         }
 
         /// <summary>
         /// 文件流下载
         /// </summary>
-        /// <param name="fileName"></param>
+        /// <param name="virtualFilePath">文件虚拟路径</param>
         /// <returns></returns>
-        [HttpGet("{fileName}")]
-        public async Task<IActionResult> Download(string fileName)
+        [HttpGet("stream")]
+        public async Task<IActionResult> Download([FromQuery] string virtualFilePath)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(virtualFilePath))
             {
                 return NotFound();
             }
+            var getFileArgs = new BlobProviderGetArgs(virtualFilePath);
+            var fileStream = await _fileSystemBlobProvider.GetOrNullAsync(getFileArgs);
+            // 获取文件名
+            var fileName = Path.GetFileName(virtualFilePath);
 
-            var path = $@"{_folder}\{fileName}";
-            var memoryStream = new MemoryStream();
-            using (var stream = new FileStream(path, FileMode.Open))
+            // 获取文件扩展名
+            var fileExtension = Path.GetExtension(virtualFilePath).ToLowerInvariant();
+            // 默认响应类型
+            var contextType = "application/octet-stream";
+            if (_contentTypes.ContainsKey(fileExtension))
             {
-                await stream.CopyToAsync(memoryStream);
+                contextType = _contentTypes[fileExtension];
             }
-            memoryStream.Seek(0, SeekOrigin.Begin);
 
             // 响应头必须设置"Content Type"，否则浏览器会解析失败。
-            return new FileStreamResult(memoryStream, _contentTypes[Path.GetExtension(path).ToLowerInvariant()]);
+            return File(fileStream, contextType, fileName);
         }
 
-        /// <summary>
-        /// 文件流下载
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        [HttpGet("{filePath}/{fileName}")]
-        public async Task<IActionResult> Download(string filePath, string fileName)
-        {
-            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(fileName))
-            {
-                return NotFound();
-            }
+        ///// <summary>
+        ///// 文件流下载
+        ///// </summary>
+        ///// <param name="filePath"></param>
+        ///// <param name="fileName"></param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public async Task<IActionResult> Download([FromQuery] string filePath, string fileName)
+        //{
+        //    if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(fileName))
+        //    {
+        //        return NotFound();
+        //    }
 
-            var fileProvider = _fileServerProvider.GetProvider($"/{filePath}");
-            var fileInfo = fileProvider.GetFileInfo($"{fileName}");
-            var memoryStream = new MemoryStream();
-            using (var stream = new FileStream(fileInfo.PhysicalPath, FileMode.Open))
-            {
-                await stream.CopyToAsync(memoryStream);
-            }
-            memoryStream.Seek(0, SeekOrigin.Begin);
+        //    var fileProvider = _fileServerProvider.GetProvider($"/{filePath}");
+        //    var fileInfo = fileProvider.GetFileInfo($"{fileName}");
+        //    var memoryStream = new MemoryStream();
+        //    using (var stream = new FileStream(fileInfo.PhysicalPath, FileMode.Open))
+        //    {
+        //        await stream.CopyToAsync(memoryStream);
+        //    }
+        //    memoryStream.Seek(0, SeekOrigin.Begin);
 
-            // 响应头必须设置"Content Type"，否则浏览器会解析失败。
-            return new FileStreamResult(memoryStream, _contentTypes[Path.GetExtension(fileInfo.PhysicalPath).ToLowerInvariant()]);
-        }
+        //    // 响应头必须设置"Content Type"，否则浏览器会解析失败。
+        //    return new FileStreamResult(memoryStream, _contentTypes[Path.GetExtension(fileInfo.PhysicalPath).ToLowerInvariant()]);
+        //}
     }
 }

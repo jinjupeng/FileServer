@@ -1,6 +1,5 @@
 using FileServer.FileProvider;
 using FileServer.FileSystem;
-using FileServer.OSS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +31,6 @@ namespace FileServer.Hosted
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddFileServer(Configuration);
-
-            services.AddOSSProvider(Configuration);
 
             services.AddFileSystem(Configuration);
 

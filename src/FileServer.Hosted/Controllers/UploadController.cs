@@ -1,16 +1,11 @@
-﻿using FileServer.Common.Extensions;
-using FileServer.FileProvider;
-using FileServer.FileSystem;
+﻿using FileServer.FileProvider;
 using FileServer.Hosted.Filters;
-using FileServer.OSS;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace FileServer.Hosted.Controllers
@@ -35,34 +30,14 @@ namespace FileServer.Hosted.Controllers
          * 4、和OSS结合在一起使用
          */
 
-        /// <summary>
-        /// 上传目录
-        /// </summary>
-        private readonly string _targetFilePath;
-        private IFileServerProvider _fileServerProvider;
-        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ILogger<UploadController> _logger;
-        private readonly IOSSProvider _provider;
-        private readonly OSSOptions _options;
         private readonly IBlobProvider _fileSystemBlobProvider;
 
-        public UploadController(IWebHostEnvironment hostingEnvironment, IFileServerProvider fileServerProvider,
-            ILogger<UploadController> logger, IOSSProvider provider,
-            IOptions<OSSOptions> options, IBlobProvider fileSystemBlobProvider)
+        public UploadController(IWebHostEnvironment hostingEnvironment, ILogger<UploadController> logger, 
+            IBlobProvider fileSystemBlobProvider)
         {
-            _hostingEnvironment = hostingEnvironment;
-            _fileServerProvider = fileServerProvider;
             _logger = logger;
-            _provider = provider;
-            _options = options.Value;
             _fileSystemBlobProvider = fileSystemBlobProvider;
-
-            // 把上传目录设为：wwwroot\UploadFolder
-            _targetFilePath = $@"{_hostingEnvironment.ContentRootPath}\UploadFolder";
-            if (!Directory.Exists(_targetFilePath))
-            {
-                Directory.CreateDirectory(_targetFilePath);
-            }
         }
 
         /// <summary>
@@ -79,6 +54,7 @@ namespace FileServer.Hosted.Controllers
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
             //{ BodyLengthLimit = 2000 };//
             var section = await reader.ReadNextSectionAsync();
+            var filePath = string.Empty;
 
             //读取section
             while (section != null)
@@ -86,13 +62,16 @@ namespace FileServer.Hosted.Controllers
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
                 if (hasContentDispositionHeader)
                 {
-                    // 生成随机文件名
-                    var trustedFileNameForFileStorage = Path.GetRandomFileName();
-                    await section.Body.WriteFileAsync(Path.Combine(_targetFilePath, trustedFileNameForFileStorage));
+                    var fileSection = section.AsFileSection();
+                    var fileName = fileSection.FileName;
+                    filePath = $"files/{fileName}";
+                    var blobProviderSaveArgs = new BlobProviderSaveArgs(filePath, section.Body, overrideExisting : true);
+                    await _fileSystemBlobProvider.SaveAsync(blobProviderSaveArgs);
+                    //await section.Body.WriteFileAsync(Path.Combine(_targetFilePath, "{fileName}"));
                 }
                 section = await reader.ReadNextSectionAsync();
             }
-            return Created(nameof(UploadController), null);
+            return Ok(filePath);
         }
 
         /// <summary>
@@ -103,28 +82,11 @@ namespace FileServer.Hosted.Controllers
         [HttpPost("UploadingFormFile")]
         public async Task<IActionResult> UploadingFormFile(IFormFile file)
         {
-            var fileProvider = _fileServerProvider.GetProvider($"{_options.RequestPath}");
-            using (var stream = file.OpenReadStream())
-            {
-                await stream.WriteFileAsync(Path.Combine(_options.UploadPath, file.FileName));
-            }
-            var fileInfo = fileProvider.GetFileInfo($"{file.FileName}");
-            _options.FileInfo = new FileInfo(fileInfo.PhysicalPath);
-            return Ok(await Task.FromResult(_provider.GetFileUrl(_options)));
-        }
-
-        /// <summary>
-        /// 缓存式文件上传
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [HttpPost("UploadingFormFile2")]
-        public async Task<IActionResult> UploadingFormFile2(IFormFile file)
-        {
+            var filePath = $"files/{file.FileName}";
             var stream = file.OpenReadStream();
-            var blobProviderSaveArgs = new BlobProviderSaveArgs("files/123.pdf", stream);
+            var blobProviderSaveArgs = new BlobProviderSaveArgs(filePath, stream, overrideExisting: true);
             await _fileSystemBlobProvider.SaveAsync(blobProviderSaveArgs);
-            return Ok();
+            return Ok(filePath);
         }
     }
 }

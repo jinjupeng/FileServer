@@ -35,13 +35,13 @@ namespace FileServer.FileSystem
             {
                 return null;
             }
+            var memoryStream = new MemoryStream();
             using (var fileStream = File.OpenRead(filePath))
             {
-                var memoryStream = new MemoryStream();
                 await fileStream.CopyToAsync(memoryStream, args.CancellationToken);
-                return memoryStream;
             }
-
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return memoryStream;
         }
 
         public override async Task SaveAsync(BlobProviderSaveArgs args)
@@ -61,11 +61,7 @@ namespace FileServer.FileSystem
 
             using (var fileStream = File.Open(filePath, fileMode, FileAccess.Write))
             {
-                await args.BlobStream.CopyToAsync(
-                    fileStream,
-                    args.CancellationToken
-                );
-
+                await args.BlobStream.CopyToAsync(fileStream, args.CancellationToken);
                 await fileStream.FlushAsync();
             }
         }
