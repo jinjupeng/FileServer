@@ -1,5 +1,6 @@
 ﻿using FileServer.Common.Extensions;
 using FileServer.FileProvider;
+using FileServer.FileSystem;
 using FileServer.Hosted.Filters;
 using FileServer.OSS;
 using Microsoft.AspNetCore.Hosting;
@@ -43,16 +44,19 @@ namespace FileServer.Hosted.Controllers
         private readonly ILogger<UploadController> _logger;
         private readonly IOSSProvider _provider;
         private readonly OSSOptions _options;
+        private readonly IBlobProvider _fileSystemBlobProvider;
 
         public UploadController(IWebHostEnvironment hostingEnvironment, IFileServerProvider fileServerProvider,
             ILogger<UploadController> logger, IOSSProvider provider,
-            IOptions<OSSOptions> options)
+            IOptions<OSSOptions> options, IBlobProvider fileSystemBlobProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _fileServerProvider = fileServerProvider;
             _logger = logger;
             _provider = provider;
             _options = options.Value;
+            _fileSystemBlobProvider = fileSystemBlobProvider;
+
             // 把上传目录设为：wwwroot\UploadFolder
             _targetFilePath = $@"{_hostingEnvironment.ContentRootPath}\UploadFolder";
             if (!Directory.Exists(_targetFilePath))
@@ -109,5 +113,18 @@ namespace FileServer.Hosted.Controllers
             return Ok(await Task.FromResult(_provider.GetFileUrl(_options)));
         }
 
+        /// <summary>
+        /// 缓存式文件上传
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost("UploadingFormFile2")]
+        public async Task<IActionResult> UploadingFormFile2(IFormFile file)
+        {
+            var stream = file.OpenReadStream();
+            var blobProviderSaveArgs = new BlobProviderSaveArgs("files/123.pdf", stream);
+            await _fileSystemBlobProvider.SaveAsync(blobProviderSaveArgs);
+            return Ok();
+        }
     }
 }

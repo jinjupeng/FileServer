@@ -1,4 +1,5 @@
 using FileServer.FileProvider;
+using FileServer.FileSystem;
 using FileServer.OSS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,8 @@ namespace FileServer.Hosted
             services.AddFileServer(Configuration);
 
             services.AddOSSProvider(Configuration);
+
+            services.AddFileSystem(Configuration);
 
             #region Swagger UI
 
@@ -88,6 +91,7 @@ namespace FileServer.Hosted
             {
                 app.UseDeveloperExceptionPage();
             }
+
 
             // call convenience method which adds our FileServerOptions from the IFileServerProvider service
             app.UseFileServerProvider(fileServerProvider);
