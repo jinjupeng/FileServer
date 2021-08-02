@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\FileServer.FileProvider\FileServer.FileProvider.csproj" />
+    <ProjectReference Include="..\FileServer.FileProvider\FileServer.FileProvider.csproj" />
   </ItemGroup>
 
 </Project>
