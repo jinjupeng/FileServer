@@ -1,5 +1,6 @@
 ﻿using FileServer.Common.Helper;
 using FileServer.FileProvider;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -69,6 +70,11 @@ namespace FileServer.FileSystem
         protected virtual Task<bool> ExistsAsync(string filePath)
         {
             return Task.FromResult(File.Exists(filePath));
+        }
+
+        public override Task InitializeAsync(FileProviderScheme scheme, HttpContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

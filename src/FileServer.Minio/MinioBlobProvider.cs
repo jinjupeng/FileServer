@@ -1,4 +1,6 @@
 ﻿using FileServer.FileProvider;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
 using System;
@@ -7,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace FileServer.Minio
 {
-    public class MinioBlobProvider : BlobProviderBase
+    public class MinioBlobProvider : FileProviderHandler<MinioBlobOptions>
     {
         protected IMinioBlobNameCalculator MinioBlobNameCalculator { get; }
 
-        public MinioBlobProvider(
-            IMinioBlobNameCalculator minioBlobNameCalculator)
+        public MinioBlobProvider(IMinioBlobNameCalculator minioBlobNameCalculator, IOptionsMonitor<MinioBlobOptions> options,
+            ILoggerFactory logger)
+            :base(options, logger)
         {
             MinioBlobNameCalculator = minioBlobNameCalculator;
         }
@@ -21,14 +24,14 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = GetContainerName(args);
-
+            var containerName = Options.BucketName;
+            
             if (!args.OverrideExisting && await BlobExistsAsync(client, containerName, blobName))
             {
                 throw new Exception($"Saving BLOB '{args.BlobName}' does already exists in the container '{containerName}'! Set {nameof(args.OverrideExisting)} if it should be overwritten.");
             }
 
-            if (configuration.CreateBucketIfNotExists)
+            if (Options.CreateBucketIfNotExists)
             {
                 await CreateBucketIfNotExists(client, containerName);
             }
@@ -40,7 +43,7 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = GetContainerName(args);
+            var containerName = Options.BucketName;
 
             if (await BlobExistsAsync(client, containerName, blobName))
             {
@@ -55,7 +58,7 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = GetContainerName(args);
+            var containerName = Options.BucketName;
 
             return await BlobExistsAsync(client, containerName, blobName);
         }
@@ -64,7 +67,7 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = GetContainerName(args);
+            var containerName = Options.BucketName;
 
             if (!await BlobExistsAsync(client, containerName, blobName))
             {
@@ -87,12 +90,11 @@ namespace FileServer.Minio
             return memoryStream;
         }
 
-        protected virtual MinioClient GetMinioClient(BlobProviderArgs args)
+        public virtual MinioClient GetMinioClient(BlobProviderArgs args)
         {
-            var configuration = args.Configuration.GetMinioConfiguration();
-            var client = new MinioClient(configuration.EndPoint, configuration.AccessKey, configuration.SecretKey);
+            var client = new MinioClient(Options.EndPoint, Options.AccessKey, Options.SecretKey);
 
-            if (configuration.WithSSL)
+            if (Options.WithSSL)
             {
                 client.WithSSL();
             }
@@ -100,7 +102,7 @@ namespace FileServer.Minio
             return client;
         }
 
-        protected virtual async Task CreateBucketIfNotExists(MinioClient client, string containerName)
+        public virtual async Task CreateBucketIfNotExists(MinioClient client, string containerName)
         {
             if (!await client.BucketExistsAsync(containerName))
             {
@@ -108,7 +110,7 @@ namespace FileServer.Minio
             }
         }
 
-        protected virtual async Task<bool> BlobExistsAsync(MinioClient client, string containerName, string blobName)
+        public virtual async Task<bool> BlobExistsAsync(MinioClient client, string containerName, string blobName)
         {
             // Make sure Blob Container exists.
             if (await client.BucketExistsAsync(containerName))
@@ -133,13 +135,5 @@ namespace FileServer.Minio
             return false;
         }
 
-        protected virtual string GetContainerName(BlobProviderArgs args)
-        {
-            var configuration = args.Configuration.GetMinioConfiguration();
-
-            return configuration.BucketName.IsNullOrWhiteSpace()
-                ? args.ContainerName
-                : BlobNormalizeNamingService.NormalizeContainerName(args.Configuration, configuration.BucketName);
-        }
     }
 }

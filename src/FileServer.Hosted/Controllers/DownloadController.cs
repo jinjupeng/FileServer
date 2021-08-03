@@ -1,5 +1,5 @@
 ﻿using FileServer.FileProvider;
-using Microsoft.AspNetCore.Hosting;
+using FileServer.VirtualFileSystem;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;

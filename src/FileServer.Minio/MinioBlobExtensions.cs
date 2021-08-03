@@ -1,13 +1,14 @@
 ﻿using FileServer.FileProvider;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace FileServer.Minio
 {
     public static class MinioBlobExtensions
     {
-        public static IServiceCollection AddFileSystem(this IServiceCollection services, IConfiguration cfg)
+        public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration cfg)
         {
             var option = new MinioBlobOptions();
             var section = cfg.GetSection("FileServer:Minio");

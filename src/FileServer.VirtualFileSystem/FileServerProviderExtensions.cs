@@ -21,9 +21,9 @@ namespace FileServer.VirtualFileSystem
                 {
                     new FileServerOptions
                     {
-                        FileProvider = new PhysicalFileProvider(cfg["FileServer:VirtualFileServer:UploadPath"]),
-                        RequestPath = new PathString(cfg["FileServer:VirtualFileServer:RequestPath"]),
-                        EnableDirectoryBrowsing = Convert.ToBoolean(cfg["FileServer:VirtualFileServer:EnableDirectoryBrowsing"]),
+                        FileProvider = new PhysicalFileProvider(cfg["FileServer:VirtualFileSystem:UploadPath"]),
+                        RequestPath = new PathString(cfg["FileServer:VirtualFileSystem:RequestPath"]),
+                        EnableDirectoryBrowsing = Convert.ToBoolean(cfg["FileServer:VirtualFileSystem:EnableDirectoryBrowsing"]),
                     },
                     //new FileServerOptions
                     //{

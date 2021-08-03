@@ -1,4 +1,5 @@
 using FileServer.FileSystem;
+using FileServer.Minio;
 using FileServer.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,8 @@ namespace FileServer.Hosted
             services.AddVirtualFileServer(Configuration);
 
             services.AddFileSystem(Configuration);
+
+            services.AddMinio(Configuration);
 
             #region Swagger UI
 

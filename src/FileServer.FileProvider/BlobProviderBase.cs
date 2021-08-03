@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FileServer.FileProvider
@@ -12,5 +13,7 @@ namespace FileServer.FileProvider
         public abstract Task<bool> ExistsAsync(BlobProviderExistsArgs args);
 
         public abstract Task<Stream> GetOrNullAsync(BlobProviderGetArgs args);
+
+        public abstract Task InitializeAsync(FileProviderScheme scheme, HttpContext context);
     }
 }
