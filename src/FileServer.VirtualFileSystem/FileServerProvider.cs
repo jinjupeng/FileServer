@@ -3,9 +3,8 @@ using Microsoft.Extensions.FileProviders;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace FileServer.FileProvider
+namespace FileServer.VirtualFileSystem
 {
     /// <summary>
     /// Implements IFileServerProvider in a very simple way, for demonstration only

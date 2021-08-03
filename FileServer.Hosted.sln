@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.Aliyun", "src\Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.FileSystem", "src\FileServer.FileSystem\FileServer.FileSystem.csproj", "{88789E31-1EAF-4448-8A9E-C878D2467E39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServer.Minio", "src\FileServer.Minio\FileServer.Minio.csproj", "{8699FF50-BB75-4736-A191-23A4CB325517}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServer.VirtualFileSystem", "src\FileServer.VirtualFileSystem\FileServer.VirtualFileSystem.csproj", "{B66983CB-80C5-413B-B160-E7D5C2C431AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{88789E31-1EAF-4448-8A9E-C878D2467E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88789E31-1EAF-4448-8A9E-C878D2467E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88789E31-1EAF-4448-8A9E-C878D2467E39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8699FF50-BB75-4736-A191-23A4CB325517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8699FF50-BB75-4736-A191-23A4CB325517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8699FF50-BB75-4736-A191-23A4CB325517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8699FF50-BB75-4736-A191-23A4CB325517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

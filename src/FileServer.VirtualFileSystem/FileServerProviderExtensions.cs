@@ -6,14 +6,14 @@ using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 
-namespace FileServer.FileProvider
+namespace FileServer.VirtualFileSystem
 {
     /// <summary>
     /// Wrapper for UseFileServer to easily use the FileServerOptions registered in the IFileServerProvider
     /// </summary>
     public static class FileServerProviderExtensions
     {
-        public static IServiceCollection AddFileServer(this IServiceCollection services, IConfiguration cfg)
+        public static IServiceCollection AddVirtualFileServer(this IServiceCollection services, IConfiguration cfg)
         {
             // Add our IFileServerProvider implementation as a singleton
             services.AddSingleton<IFileServerProvider>(new FileServerProvider(
@@ -21,9 +21,9 @@ namespace FileServer.FileProvider
                 {
                     new FileServerOptions
                     {
-                        FileProvider = new PhysicalFileProvider(cfg["FileServer:UploadPath"]),
-                        RequestPath = new PathString(cfg["FileServer:RequestPath"]),
-                        EnableDirectoryBrowsing = Convert.ToBoolean(cfg["FileServer:EnableDirectoryBrowsing"]),
+                        FileProvider = new PhysicalFileProvider(cfg["FileServer:VirtualFileServer:UploadPath"]),
+                        RequestPath = new PathString(cfg["FileServer:VirtualFileServer:RequestPath"]),
+                        EnableDirectoryBrowsing = Convert.ToBoolean(cfg["FileServer:VirtualFileServer:EnableDirectoryBrowsing"]),
                     },
                     //new FileServerOptions
                     //{

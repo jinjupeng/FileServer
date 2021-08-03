@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 
-namespace FileServer.FileProvider
+namespace FileServer.VirtualFileSystem
 {
     public interface IFileServerProvider
     {

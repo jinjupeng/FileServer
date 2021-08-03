@@ -1,5 +1,5 @@
-using FileServer.FileProvider;
 using FileServer.FileSystem;
+using FileServer.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +29,7 @@ namespace FileServer.Hosted
                 // Set the limit to 256 MB
                 options.MultipartBodyLengthLimit = 268435456;
             });
-            services.AddFileServer(Configuration);
+            services.AddVirtualFileServer(Configuration);
 
             services.AddFileSystem(Configuration);
 

@@ -2,11 +2,11 @@
 
 namespace FileServer.FileSystem
 {
-    public class FileSystemBlobProviderOptions
+    public class FileSystemBlobOptions
     {
         private string basePath;
 
-        public FileSystemBlobProviderOptions() { }
+        public FileSystemBlobOptions() { }
 
         /// <summary>
         /// 文件上传路径

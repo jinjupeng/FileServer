@@ -1,8 +1,7 @@
-﻿using FileServer.FileProvider;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace FileServer.FileSystem
+namespace FileServer.FileProvider
 {
     public abstract class BlobProviderBase : IBlobProvider
     {
