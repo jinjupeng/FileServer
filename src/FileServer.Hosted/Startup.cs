@@ -1,3 +1,4 @@
+using FileServer.FileProvider;
 using FileServer.FileSystem;
 using FileServer.Minio;
 using FileServer.VirtualFileSystem;
@@ -32,9 +33,13 @@ namespace FileServer.Hosted
             });
             services.AddVirtualFileServer(Configuration);
 
-            services.AddFileSystem(Configuration);
+            services.AddFileProvider(FileSystemBlobDefaults.FileProviderScheme)
+                .AddFileSystem(a =>
+                {
+                    a.BasePath = "D:/UploadPath";
+                });
 
-            services.AddMinio(Configuration);
+            //services.AddMinio(Configuration);
 
             #region Swagger UI
 

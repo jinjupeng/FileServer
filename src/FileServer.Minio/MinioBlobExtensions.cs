@@ -22,7 +22,7 @@ namespace FileServer.Minio
             services.AddSingleton(option);
             services.Configure<MinioBlobOptions>(section);
 
-            services.AddTransient<IBlobProvider, MinioBlobProvider>();
+            services.AddTransient<IFileProviderHandler, MinioBlobProvider>();
             services.AddTransient<IMinioBlobNameCalculator, DefaultMinioBlobNameCalculator>();
 
             return services;

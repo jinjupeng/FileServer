@@ -1,29 +1,24 @@
-﻿using System.IO;
+﻿using FileServer.FileProvider;
+using System.IO;
 
 namespace FileServer.FileSystem
 {
-    public class FileSystemBlobOptions
+    public class FileSystemBlobOptions : FileProviderSchemeOptions
     {
-        private string basePath;
-
-        public FileSystemBlobOptions() { }
-
-        /// <summary>
-        /// 文件上传路径
-        /// </summary>
-        public string BasePath
+        public FileSystemBlobOptions()
         {
-            get
+            
+        }
+
+        public string BasePath { get; set; }
+
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (!Directory.Exists(BasePath))
             {
-                return basePath;
-            }
-            set
-            {
-                basePath = value;
-                if (!Directory.Exists(basePath))
-                {
-                    Directory.CreateDirectory(basePath);
-                }
+                Directory.CreateDirectory(BasePath);
             }
         }
     }

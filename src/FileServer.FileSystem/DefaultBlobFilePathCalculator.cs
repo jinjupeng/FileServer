@@ -8,9 +8,9 @@ namespace FileServer.FileSystem
     {
         private readonly FileSystemBlobOptions fileSystemOptions;
 
-        public DefaultBlobFilePathCalculator(IOptions<FileSystemBlobOptions> options)
+        public DefaultBlobFilePathCalculator(IOptionsMonitor<FileSystemBlobOptions> options)
         {
-            fileSystemOptions = options?.Value;
+            fileSystemOptions = options.Get(FileSystemBlobDefaults.FileProviderScheme);
         }
 
         public virtual string Calculate(BlobProviderArgs args)

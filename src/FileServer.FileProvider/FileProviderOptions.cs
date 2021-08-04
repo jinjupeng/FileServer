@@ -18,7 +18,7 @@ namespace FileServer.FileProvider
         public IDictionary<string, FileProviderSchemeBuilder> SchemeMap { get; } = new Dictionary<string, FileProviderSchemeBuilder>(StringComparer.Ordinal);
 
         /// <summary>
-        /// Adds an <see cref="AuthenticationScheme"/>.
+        /// Adds an <see cref="FileProviderScheme"/>.
         /// </summary>
         /// <param name="name">The name of the scheme being added.</param>
         /// <param name="configureBuilder">Configures the scheme.</param>
@@ -61,5 +61,10 @@ namespace FileServer.FileProvider
         /// </summary>
         public string DefaultScheme { get; set; }
 
+
+        /// <summary>
+        /// Used as the default scheme by <see cref="IFileProviderService.FileProviderAsync(HttpContext, string)"/>.
+        /// </summary>
+        public string DefaultFileProviderScheme { get; set; }
     }
 }

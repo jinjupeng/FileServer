@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FileServer.FileProvider
 {
-    public abstract class FileProviderHandler<TOptions> : IBlobProvider 
+    public abstract class FileProviderHandler<TOptions> : IFileProviderHandler 
         where TOptions : FileProviderSchemeOptions, new()
     {
         public FileProviderScheme Scheme { get; private set; }
@@ -20,26 +20,6 @@ namespace FileServer.FileProvider
         {
             Logger = logger.CreateLogger(this.GetType().FullName);
             OptionsMonitor = options;
-        }
-
-        public virtual Task<bool> DeleteAsync(BlobProviderDeleteArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Task<bool> ExistsAsync(BlobProviderExistsArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Task<Stream> GetOrNullAsync(BlobProviderGetArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Task SaveAsync(BlobProviderSaveArgs args)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task InitializeAsync(FileProviderScheme scheme, HttpContext context)
@@ -62,5 +42,30 @@ namespace FileServer.FileProvider
         /// </summary>
         /// <returns>A task</returns>
         protected virtual Task InitializeHandlerAsync() => Task.CompletedTask;
+
+        public virtual Task SaveAsync(BlobProviderSaveArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<bool> DeleteAsync(BlobProviderDeleteArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<bool> ExistsAsync(BlobProviderExistsArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<Stream> GetAsync(BlobProviderGetArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<Stream> GetOrNullAsync(BlobProviderGetArgs args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

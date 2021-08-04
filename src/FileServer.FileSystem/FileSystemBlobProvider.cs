@@ -1,17 +1,21 @@
 ﻿using FileServer.Common.Helper;
 using FileServer.FileProvider;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace FileServer.FileSystem
 {
-    public class FileSystemBlobProvider : BlobProviderBase
+    public class FileSystemBlobProvider : FileProviderHandler<FileSystemBlobOptions>
     {
         protected IBlobFilePathCalculator FilePathCalculator { get; }
 
-        public FileSystemBlobProvider(IBlobFilePathCalculator filePathCalculator)
+        public FileSystemBlobProvider(IBlobFilePathCalculator filePathCalculator, IOptionsMonitor<FileSystemBlobOptions> options,
+            ILoggerFactory logger)
+        : base(options, logger)
         {
             FilePathCalculator = filePathCalculator;
         }
@@ -47,6 +51,7 @@ namespace FileServer.FileSystem
 
         public override async Task SaveAsync(BlobProviderSaveArgs args)
         {
+            var a = Options?.BasePath;
             var filePath = FilePathCalculator.Calculate(args);
 
             if (!args.OverrideExisting && await ExistsAsync(filePath))
@@ -70,11 +75,6 @@ namespace FileServer.FileSystem
         protected virtual Task<bool> ExistsAsync(string filePath)
         {
             return Task.FromResult(File.Exists(filePath));
-        }
-
-        public override Task InitializeAsync(FileProviderScheme scheme, HttpContext context)
-        {
-            throw new NotImplementedException();
         }
     }
 }

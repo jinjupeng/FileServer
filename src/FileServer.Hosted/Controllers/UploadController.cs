@@ -31,10 +31,10 @@ namespace FileServer.Hosted.Controllers
          */
 
         private readonly ILogger<UploadController> _logger;
-        private readonly IBlobProvider _fileSystemBlobProvider;
+        private readonly IFileProviderHandler _fileSystemBlobProvider;
 
-        public UploadController(IWebHostEnvironment hostingEnvironment, ILogger<UploadController> logger, 
-            IBlobProvider fileSystemBlobProvider)
+        public UploadController(IWebHostEnvironment hostingEnvironment, ILogger<UploadController> logger,
+            IFileProviderHandler fileSystemBlobProvider)
         {
             _logger = logger;
             _fileSystemBlobProvider = fileSystemBlobProvider;

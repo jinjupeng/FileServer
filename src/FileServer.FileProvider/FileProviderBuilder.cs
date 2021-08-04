@@ -20,7 +20,7 @@ namespace FileServer.FileProvider
 
         private FileProviderBuilder AddFileProviderHelper<TOptions, THandler>(string fileServerScheme, string displayName, Action<TOptions> configureOptions)
             where TOptions : FileProviderSchemeOptions, new()
-            where THandler : class, IBlobProvider
+            where THandler : class, IFileProviderHandler
         {
             Services.Configure<FileProviderOptions>(o =>
             {
