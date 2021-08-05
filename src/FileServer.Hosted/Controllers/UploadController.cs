@@ -44,9 +44,9 @@ namespace FileServer.Hosted.Controllers
         /// 流式文件上传
         /// </summary>
         /// <returns></returns>
-        [HttpPost("UploadingStream")]
+        [HttpPost("Stream")]
         [DisableFormValueModelBindingFilter]
-        public async Task<IActionResult> UploadingStream()
+        public async Task<IActionResult> Stream()
         {
             //获取boundary
             var boundary = HeaderUtilities.RemoveQuotes(MediaTypeHeaderValue.Parse(Request.ContentType).Boundary).Value;
@@ -79,8 +79,8 @@ namespace FileServer.Hosted.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [HttpPost("UploadingFormFile")]
-        public async Task<IActionResult> UploadingFormFile(IFormFile file)
+        [HttpPost("FormFile")]
+        public async Task<IActionResult> FormFile(IFormFile file)
         {
             var filePath = $"files/{file.FileName}";
             var stream = file.OpenReadStream();

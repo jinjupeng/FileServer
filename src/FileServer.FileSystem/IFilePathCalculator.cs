@@ -1,8 +1,8 @@
 ﻿using FileServer.FileProvider;
 
-namespace FileServer.Minio
+namespace FileServer.FileSystem
 {
-    public interface IMinioBlobNameCalculator
+    public interface IFilePathCalculator
     {
         string Calculate(BlobProviderArgs args);
     }

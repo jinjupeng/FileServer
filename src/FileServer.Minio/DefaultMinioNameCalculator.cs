@@ -2,7 +2,7 @@
 
 namespace FileServer.Minio
 {
-    public class DefaultMinioBlobNameCalculator : IMinioBlobNameCalculator
+    public class DefaultMinioNameCalculator : IMinioNameCalculator
     {
         public virtual string Calculate(BlobProviderArgs args)
         {

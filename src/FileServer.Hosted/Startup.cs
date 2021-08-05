@@ -1,4 +1,3 @@
-using FileServer.FileProvider;
 using FileServer.FileSystem;
 using FileServer.Minio;
 using FileServer.VirtualFileSystem;
@@ -31,15 +30,21 @@ namespace FileServer.Hosted
                 // Set the limit to 256 MB
                 options.MultipartBodyLengthLimit = 268435456;
             });
+
             services.AddVirtualFileServer(Configuration);
+            
+            //services.AddFileSystem(a =>
+            //{
+            //    a.BasePath = "D:/UploadPath";
+            //});
 
-            services.AddFileProvider(FileSystemBlobDefaults.FileProviderScheme)
-                .AddFileSystem(a =>
-                {
-                    a.BasePath = "D:/UploadPath";
-                });
-
-            //services.AddMinio(Configuration);
+            services.AddMinio(options =>
+            {
+                options.AccessKey = "";
+                options.SecretKey = "";
+                options.BucketName = "";
+                options.EndPoint = "127.0.0.1:9000";
+            });
 
             #region Swagger UI
 

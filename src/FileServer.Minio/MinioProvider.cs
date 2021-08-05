@@ -1,5 +1,5 @@
-﻿using FileServer.FileProvider;
-using Microsoft.Extensions.Logging;
+﻿using FileServer.Common.Extensions;
+using FileServer.FileProvider;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace FileServer.Minio
 {
-    public class MinioBlobProvider : FileProviderHandler<MinioBlobOptions>
+    public class MinioProvider : FileProviderHandler
     {
-        protected IMinioBlobNameCalculator MinioBlobNameCalculator { get; }
+        protected IMinioNameCalculator MinioBlobNameCalculator { get; }
+        private readonly MinioOptions Options;
 
-        public MinioBlobProvider(IMinioBlobNameCalculator minioBlobNameCalculator, IOptionsMonitor<MinioBlobOptions> options,
-            ILoggerFactory logger)
-            :base(options, logger)
+        public MinioProvider(IMinioNameCalculator minioBlobNameCalculator, IOptions<MinioOptions> options)
         {
             MinioBlobNameCalculator = minioBlobNameCalculator;
+            Options = options?.Value;
         }
 
         public override async Task SaveAsync(BlobProviderSaveArgs args)
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = Options.BucketName;
+            var containerName = GetContainerName();
             
             if (!args.OverrideExisting && await BlobExistsAsync(client, containerName, blobName))
             {
@@ -43,7 +43,7 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = Options.BucketName;
+            var containerName = GetContainerName();
 
             if (await BlobExistsAsync(client, containerName, blobName))
             {
@@ -58,7 +58,7 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = Options.BucketName;
+            var containerName = GetContainerName();
 
             return await BlobExistsAsync(client, containerName, blobName);
         }
@@ -67,7 +67,7 @@ namespace FileServer.Minio
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
-            var containerName = Options.BucketName;
+            var containerName = GetContainerName();
 
             if (!await BlobExistsAsync(client, containerName, blobName))
             {
@@ -87,6 +87,10 @@ namespace FileServer.Minio
                 }
             });
 
+            //必须将流的当前位置置0，否则将引发异常
+            //如果不设置为0，则流的当前位置在流的末端1629，然后读流就会从索引1629开始读取，实际上流的最大索引是1628，就会引发无效操作异常System.InvalidOperationException
+            //System.InvalidOperationException: Response Content-Length mismatch: too few bytes written (0 of 1628)
+            memoryStream.Seek(0, SeekOrigin.Begin);
             return memoryStream;
         }
 
@@ -135,5 +139,15 @@ namespace FileServer.Minio
             return false;
         }
 
+        public override Task<Stream> GetAsync(BlobProviderGetArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual string GetContainerName()
+        {
+            return Options.BucketName.IsNullOrWhiteSpace()
+                ? MinioDefaults.BucketName : Options.BucketName;
+        }
     }
 }

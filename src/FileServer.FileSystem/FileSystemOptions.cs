@@ -1,21 +1,18 @@
-﻿using FileServer.FileProvider;
-using System.IO;
+﻿using System.IO;
 
 namespace FileServer.FileSystem
 {
-    public class FileSystemBlobOptions : FileProviderSchemeOptions
+    public class FileSystemOptions
     {
-        public FileSystemBlobOptions()
+        public FileSystemOptions()
         {
             
         }
 
         public string BasePath { get; set; }
 
-        public override void Validate()
+        public virtual void Validate()
         {
-            base.Validate();
-
             if (!Directory.Exists(BasePath))
             {
                 Directory.CreateDirectory(BasePath);

@@ -25,7 +25,7 @@ namespace FileServer.Hosted.Controllers
 
         private readonly ILogger<DownloadController> _logger;
         private IFileServerProvider _fileServerProvider;
-        private readonly IBlobProvider _fileSystemBlobProvider;
+        private readonly IFileProviderHandler _fileSystemBlobProvider;
         private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
         {
             { ".png", "image/png" },
@@ -35,8 +35,8 @@ namespace FileServer.Hosted.Controllers
             { ".pdf", "application/pdf"}
         };
 
-        public DownloadController(IFileServerProvider fileServerProvider, ILogger<DownloadController> logger, 
-            IBlobProvider fileSystemBlobProvider)
+        public DownloadController(IFileServerProvider fileServerProvider, ILogger<DownloadController> logger,
+            IFileProviderHandler fileSystemBlobProvider)
         {
             _fileServerProvider = fileServerProvider;
             _logger = logger;

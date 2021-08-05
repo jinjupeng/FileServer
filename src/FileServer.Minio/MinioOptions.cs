@@ -1,10 +1,12 @@
-﻿using FileServer.FileProvider;
-using System;
+﻿using System;
 
 namespace FileServer.Minio
 {
-    public class MinioBlobOptions : FileProviderSchemeOptions
+    public class MinioOptions
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string BucketName { get; set; }
 
         /// <summary>
@@ -33,12 +35,8 @@ namespace FileServer.Minio
         public bool CreateBucketIfNotExists { get; set; } = false;
 
 
-        public override void Validate()
+        public virtual void Validate()
         {
-            if (string.IsNullOrEmpty(BucketName))
-            {
-                throw new ArgumentException($"The {nameof(BucketName)} option must be provided.");
-            }
 
             if (string.IsNullOrEmpty(EndPoint))
             {

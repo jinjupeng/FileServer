@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace FileServer.Minio
 {
-    public class MinioBlobDefault
+    public class MinioDefaults
     {
         public const string BucketName = "Minio.BucketName";
         public const string EndPoint = "Minio.EndPoint";
