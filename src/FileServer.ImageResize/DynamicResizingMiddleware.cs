@@ -61,17 +61,19 @@ namespace FileServer.ImageResize
                 return;
             }
 
+            var sizeKey = instructions.BuildSizeKey();
+
             try
             {
                 _log.LogDebug("Do resizing");
                 using (var tempFile = new MemoryStream())
                 {
-                    using (Stream original = fileStream)
+                    using (Stream original = await _storage.GetOrNullAsync(blobProviderGetArgs))
                     {
                         _resizer.Resize(original, tempFile, instructions); 
                         tempFile.Position = 0;
 
-                        var saveBlobName = $"{Path.GetDirectoryName(blobName)}/{Path.GetFileNameWithoutExtension(blobName)}_{instructions.Width}_{instructions.Height}{Path.GetExtension(blobName)}";
+                        var saveBlobName = $"{Path.GetDirectoryName(blobName)}/{Path.GetFileNameWithoutExtension(blobName)}_{sizeKey}{Path.GetExtension(blobName)}";
 
                         var responseUrl = $"{context.Request.Scheme}://{ context.Request.Host}/{saveBlobName}";
                         // 如果之前不存在相同的裁切格式图片，则新增一个，否则直接返回响应
@@ -89,7 +91,7 @@ namespace FileServer.ImageResize
             catch (Exception ex) // 图片裁切异常
             {
                 _log.LogError("Exception during dynamic resizing, redirect to the origin {0}", ex);
-                context.Response.Redirect($"{context.Request.Scheme}://{ context.Request.Host}/{blobName}", false);
+                context.Response.Redirect($"{context.Request.Scheme}://{context.Request.Host}/{blobName}", false);
             }
 
             await _next(context);

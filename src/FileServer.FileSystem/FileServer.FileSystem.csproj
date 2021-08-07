@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Local storage for FileServer</Description>
+    <PackageProjectUrl>https://github.com/jinjupeng/FileServer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jinjupeng/FileServer</RepositoryUrl>
+    <Copyright>jinjupeng</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

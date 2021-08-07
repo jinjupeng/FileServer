@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Image Resize for FileServer</Description>
+    <PackageProjectUrl>https://github.com/jinjupeng/FileServer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jinjupeng/FileServer</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>jinjupeng</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

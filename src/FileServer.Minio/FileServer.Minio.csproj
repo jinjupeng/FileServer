@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Minio storage for FileServer</Description>
+    <Copyright>jinjupeng</Copyright>
+    <PackageProjectUrl>https://github.com/jinjupeng/FileServer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jinjupeng/FileServer</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
