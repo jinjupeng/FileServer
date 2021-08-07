@@ -11,10 +11,10 @@ namespace FileServer.Minio
 {
     public class MinioProvider : FileProviderHandler
     {
-        protected IMinioNameCalculator MinioBlobNameCalculator { get; }
+        protected IFilePathCalculator MinioBlobNameCalculator { get; }
         private readonly MinioOptions Options;
 
-        public MinioProvider(IMinioNameCalculator minioBlobNameCalculator, IOptions<MinioOptions> options)
+        public MinioProvider(IFilePathCalculator minioBlobNameCalculator, IOptions<MinioOptions> options)
         {
             MinioBlobNameCalculator = minioBlobNameCalculator;
             Options = options?.Value;

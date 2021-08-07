@@ -1,4 +1,6 @@
 using FileServer.FileSystem;
+using FileServer.ImageResize;
+using FileServer.ImageResize.Utils;
 using FileServer.Minio;
 using FileServer.VirtualFileSystem;
 using Microsoft.AspNetCore.Builder;
@@ -7,9 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 
 namespace FileServer.Hosted
 {
@@ -31,20 +35,33 @@ namespace FileServer.Hosted
                 options.MultipartBodyLengthLimit = 268435456;
             });
 
-            services.AddVirtualFileServer(Configuration);
-            
-            //services.AddFileSystem(a =>
-            //{
-            //    a.BasePath = "D:/UploadPath";
-            //});
+            services.AddVirtualFileServer(new List<FileServerOptions> {
+                new FileServerOptions
+                {
+                    FileProvider = new PhysicalFileProvider("D:/UploadPath/FileSystem"),
+                    RequestPath = new PathString(""),
+                    EnableDirectoryBrowsing = false
+                }
+            }); 
 
-            services.AddMinio(options =>
+            services.AddFileSystem(a =>
             {
-                options.AccessKey = "";
-                options.SecretKey = "";
-                options.BucketName = "";
-                options.EndPoint = "127.0.0.1:9000";
+                a.BasePath = "D:/UploadPath";
             });
+
+            services.AddDynamicResizing(options => 
+            {
+                options.DefaultInstructions = new ResizeInstructions();
+                options.MandatoryInstructions = new ResizeInstructions();
+            });
+
+            //services.AddMinio(options =>
+            //{
+            //    options.AccessKey = "";
+            //    options.SecretKey = "";
+            //    options.BucketName = "";
+            //    options.EndPoint = "127.0.0.1:9000";
+            //});
 
             #region Swagger UI
 
@@ -101,6 +118,7 @@ namespace FileServer.Hosted
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDynamicResizing();
 
             // call convenience method which adds our FileServerOptions from the IFileServerProvider service
             app.UseFileServerProvider(fileServerProvider);

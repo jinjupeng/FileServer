@@ -30,7 +30,7 @@ namespace FileServer.Minio
         public static IServiceCollection AddMinio(this IServiceCollection services, Action<MinioOptions> configureOptions)
         {
             services.TryAddTransient<IFileProviderHandler, MinioProvider>();
-            services.TryAddTransient<IMinioNameCalculator, DefaultMinioNameCalculator>();
+            services.TryAddTransient<IFilePathCalculator, DefaultMinioNameCalculator>();
 
             if (configureOptions != null)
             {

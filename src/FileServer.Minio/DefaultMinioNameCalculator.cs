@@ -2,7 +2,7 @@
 
 namespace FileServer.Minio
 {
-    public class DefaultMinioNameCalculator : IMinioNameCalculator
+    public class DefaultMinioNameCalculator : IFilePathCalculator
     {
         public virtual string Calculate(BlobProviderArgs args)
         {

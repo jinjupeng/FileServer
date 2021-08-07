@@ -1,6 +1,6 @@
-﻿using FileServer.FileProvider;
+﻿
 
-namespace FileServer.FileSystem
+namespace FileServer.FileProvider
 {
     public interface IFilePathCalculator
     {

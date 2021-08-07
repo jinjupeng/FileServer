@@ -12,6 +12,7 @@
     <ProjectReference Include="..\FileServer.Common\FileServer.Common.csproj" />
     <ProjectReference Include="..\FileServer.FileProvider\FileServer.FileProvider.csproj" />
     <ProjectReference Include="..\FileServer.FileSystem\FileServer.FileSystem.csproj" />
+    <ProjectReference Include="..\FileServer.ImageResize\FileServer.ImageResize.csproj" />
     <ProjectReference Include="..\FileServer.Minio\FileServer.Minio.csproj" />
     <ProjectReference Include="..\FileServer.VirtualFileSystem\FileServer.VirtualFileSystem.csproj" />
   </ItemGroup>

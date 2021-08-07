@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.Aliyun", "src\Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.FileSystem", "src\FileServer.FileSystem\FileServer.FileSystem.csproj", "{88789E31-1EAF-4448-8A9E-C878D2467E39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServer.Minio", "src\FileServer.Minio\FileServer.Minio.csproj", "{8699FF50-BB75-4736-A191-23A4CB325517}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.Minio", "src\FileServer.Minio\FileServer.Minio.csproj", "{8699FF50-BB75-4736-A191-23A4CB325517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServer.VirtualFileSystem", "src\FileServer.VirtualFileSystem\FileServer.VirtualFileSystem.csproj", "{B66983CB-80C5-413B-B160-E7D5C2C431AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.VirtualFileSystem", "src\FileServer.VirtualFileSystem\FileServer.VirtualFileSystem.csproj", "{B66983CB-80C5-413B-B160-E7D5C2C431AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServer.ImageResize", "src\FileServer.ImageResize\FileServer.ImageResize.csproj", "{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B66983CB-80C5-413B-B160-E7D5C2C431AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
