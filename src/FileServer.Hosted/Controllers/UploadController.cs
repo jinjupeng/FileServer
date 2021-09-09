@@ -15,9 +15,7 @@ namespace FileServer.Hosted.Controllers
     public class UploadController : ControllerBase
     {
         /*
-         * 1、切片上传
-         * 2、多线程上传
-         * 3、流式上传
+         * 参考链接：
          * https://docs.microsoft.com/zh-cn/aspnet/core/mvc/models/file-uploads?view=aspnetcore-3.1
          * https://blog.johnwu.cc/article/ironman-day23-asp-net-core-upload-download-files.html
          * https://stackoverflow.com/questions/62502286/uploading-and-downloading-large-files-in-asp-net-core-3-1
@@ -26,8 +24,15 @@ namespace FileServer.Hosted.Controllers
          * https://gitee.com/loogn/UploadServer?_from=gitee_search
          * https://www.cnblogs.com/Hangle/p/10233872.html
          * https://www.cnblogs.com/liyouming/p/13341173.html
-         * [虚拟目录](https://www.cnblogs.com/EminemJK/p/13362368.html)
+         * https://www.cnblogs.com/EminemJK/p/13362368.html
+         */
+
+        /*
+         * 1、切片上传
+         * 2、多线程上传
+         * 3、流式上传
          * 4、和OSS结合在一起使用
+         * 5、断点续传
          */
 
         private readonly ILogger<UploadController> _logger;

@@ -34,6 +34,8 @@ namespace FileServer.Hosted
                 // Set the limit to 256 MB
                 options.MultipartBodyLengthLimit = 268435456;
             });
+            //注入 方便获取HttpContext
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddVirtualFileServer(new List<FileServerOptions> {
                 new FileServerOptions
