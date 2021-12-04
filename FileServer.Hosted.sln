@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.Hosted", "src\FileServer.Hosted\FileServer.Hosted.csproj", "{B0A6F4DC-44D2-4020-B47B-94B7A9FC11B1}"
 EndProject
@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.Minio", "src\Fil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.VirtualFileSystem", "src\FileServer.VirtualFileSystem\FileServer.VirtualFileSystem.csproj", "{B66983CB-80C5-413B-B160-E7D5C2C431AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServer.ImageResize", "src\FileServer.ImageResize\FileServer.ImageResize.csproj", "{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileServer.ImageResize", "src\FileServer.ImageResize\FileServer.ImageResize.csproj", "{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "src\Test\Test.csproj", "{F0E67E88-06FB-4124-8177-6B3D3A26BD7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1742AFB6-C80A-4CCB-B94D-BF6F93BEF33D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0E67E88-06FB-4124-8177-6B3D3A26BD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0E67E88-06FB-4124-8177-6B3D3A26BD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0E67E88-06FB-4124-8177-6B3D3A26BD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0E67E88-06FB-4124-8177-6B3D3A26BD7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

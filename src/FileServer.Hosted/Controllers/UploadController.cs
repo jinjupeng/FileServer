@@ -2,6 +2,7 @@
 using FileServer.Hosted.Filters;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -53,15 +54,28 @@ namespace FileServer.Hosted.Controllers
         [DisableFormValueModelBindingFilter]
         public async Task<IActionResult> Stream()
         {
-            //获取boundary
-            var boundary = HeaderUtilities.RemoveQuotes(MediaTypeHeaderValue.Parse(Request.ContentType).Boundary).Value;
-            //得到reader
-            var reader = new MultipartReader(boundary, HttpContext.Request.Body);
-            //{ BodyLengthLimit = 2000 };//
+            /**
+             * string multipartBoundary = Request.GetMultipartBoundary();这个是获取到请求的分隔符。
+             * 因为在流传输文件的时候，前端标签内容需要严格遵守enctype="multipart/form-data", method=post, type="file"。 
+             * 根据 rfc1867, 这三个属性是必须的。在传输发送的过程中，分隔符用以分隔多个文件或表单项。如果分隔符为null，那说明此次传输就不是一个文件流的传输。
+             * 
+             */
+            // 获取boundary
+            // var boundary = HeaderUtilities.RemoveQuotes(MediaTypeHeaderValue.Parse(Request.ContentType).Boundary).Value;
+            var boundary = Request.GetMultipartBoundary();
+            if (string.IsNullOrWhiteSpace(boundary))
+            {
+                // 说明不是一个文件流传输
+                return BadRequest();
+            }
+
+            // 得到reader
+            var reader = new MultipartReader(boundary, Request.Body);
+            // 获取部分内容
             var section = await reader.ReadNextSectionAsync();
             var filePath = string.Empty;
 
-            //读取section
+            // 读取section
             while (section != null)
             {
                 var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
@@ -76,6 +90,18 @@ namespace FileServer.Hosted.Controllers
                 }
                 section = await reader.ReadNextSectionAsync();
             }
+            return Ok(filePath);
+        }
+
+        /// <summary>
+        /// 流式文件上传
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Stream2")]
+        [DisableFormValueModelBindingFilter]
+        public async Task<IActionResult> Stream2()
+        {
+            var filePath = await UploadHelper.StreamUpload(Request);
             return Ok(filePath);
         }
 
